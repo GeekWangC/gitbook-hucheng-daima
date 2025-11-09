@@ -29,6 +29,9 @@ jobs:
         run: |
           if [ -f cover.svg ] && [ ! -f cover.png ]; then rsvg-convert -w 1600 -h 2560 cover.svg -o cover.png; fi
 
+      - name: Prepare output directory
+        run: mkdir -p dist
+
       - name: Build EPUB
         run: npx honkit epub . dist/hucheng-daima.epub
 
@@ -43,4 +46,3 @@ jobs:
             dist/hucheng-daima.pdf
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
