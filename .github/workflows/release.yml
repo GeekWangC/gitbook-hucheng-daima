@@ -1,16 +1,12 @@
-name: Build EPUB/PDF
+name: Release EPUB/PDF on tag
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ master ]
-    paths:
-      - '**/*.md'
-      - 'book.json'
-      - '.github/workflows/ebooks.yml'
+    tags:
+      - 'v*'
 
 jobs:
-  build-ebooks:
+  build-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,7 +20,7 @@ jobs:
       - name: Install HonKit
         run: npm i -g honkit
 
-      - name: Install Calibre (ebook-convert)
+      - name: Install Calibre and tools
         run: |
           sudo apt-get update
           sudo apt-get install -y calibre librsvg2-bin imagemagick
@@ -39,10 +35,12 @@ jobs:
       - name: Build PDF
         run: npx honkit pdf . dist/hucheng-daima.pdf
 
-      - name: Upload EPUB/PDF artifacts
-        uses: actions/upload-artifact@v4
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: ebooks
-          path: |
+          files: |
             dist/hucheng-daima.epub
             dist/hucheng-daima.pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
