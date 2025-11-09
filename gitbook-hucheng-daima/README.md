@@ -35,25 +35,29 @@
 - 站点地址：`https://geekwangc.github.io/gitbook-hucheng-daima/`
 - 分支与流程：`master` 推送后触发 Actions 构建，产物部署到 `gh-pages` 分支
 
-## 本地开发（推荐 HonKit）
+## 本地开发（GitBook CLI）
 
 ```bash
 # 进入子目录
 cd gitbook-hucheng-daima
 
-# 安装 HonKit（GitBook 社区维护分支）
-npm i -g honkit
+# 建议使用 Node.js 14（gitbook-cli 对高版本 Node 兼容性较差）
+# 可用 nvm 切换：nvm use 14（或安装 nvm-windows）
+
+# 安装 gitbook-cli
+npm i -g gitbook-cli
+
+# （可选）安装插件
+gitbook install || true
 
 # 本地预览
-honkit serve   # 打开 http://localhost:4000
+gitbook serve  # 打开 http://localhost:4000
 
 # 构建静态站点
-honkit build   # 产物在 _book/
+gitbook build  # 产物在 _book/
 ```
 
 ## 部署说明
 
-- CI 配置：`.github/workflows/gh-pages.yml`（Node 18 + HonKit）
+- CI 配置：`.github/workflows/gh-pages.yml`（Node 14 + gitbook-cli）
 - 部署目标：`gh-pages` 分支（`peaceiris/actions-gh-pages` 推送 `_book/`）
-
-提示：若你仍使用老版 `gitbook-cli`，请将 Node 版本降到 12/14，并以 `gitbook serve/build` 运行；但推荐使用 HonKit 以兼容现代 Node。
