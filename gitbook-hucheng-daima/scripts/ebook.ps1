@@ -29,6 +29,16 @@ Set-Location ..
 
 if (-not (Test-Path $OutDir)) { New-Item -ItemType Directory -Path $OutDir | Out-Null }
 
+# 如果存在 cover.svg 而不存在 cover.png，尝试转换
+if ((Test-Path 'cover.svg') -and -not (Test-Path 'cover.png')) {
+  if (Get-Command rsvg-convert -ErrorAction SilentlyContinue) {
+    Write-Host '检测到 cover.svg，使用 rsvg-convert 生成 cover.png...'
+    rsvg-convert -w 1600 -h 2560 'cover.svg' -o 'cover.png'
+  } else {
+    Write-Warning '未检测到 rsvg-convert，跳过封面转换（建议安装 librsvg 或手工提供 cover.png）'
+  }
+}
+
 Write-Host '生成 EPUB...'
 honkit epub $Base "$OutDir/hucheng-daima.epub"
 
@@ -36,4 +46,3 @@ Write-Host '生成 PDF...'
 honkit pdf $Base "$OutDir/hucheng-daima.pdf"
 
 Write-Host "完成。输出目录：$(Resolve-Path $OutDir)"
-
