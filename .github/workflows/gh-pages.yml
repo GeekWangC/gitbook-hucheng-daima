@@ -1,4 +1,4 @@
-name: Deploy GitBook to Pages
+name: Deploy Book (HonKit) to Pages
 
 on:
   push:
@@ -19,19 +19,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js (Node 14 for gitbook-cli)
+      - name: Setup Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version: '22'
 
-      - name: Install GitBook CLI
-        run: npm i -g gitbook-cli
-
-      - name: Install GitBook plugins (optional)
-        run: gitbook install || true
-
-      - name: Build GitBook
-        run: gitbook build
+      - name: Build Site with HonKit
+        run: npx --yes honkit build . _book
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
