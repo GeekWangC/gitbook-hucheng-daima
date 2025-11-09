@@ -1,0 +1,45 @@
+name: Build EPUB/PDF
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - '**/*.md'
+      - 'book.json'
+      - '.github/workflows/ebooks.yml'
+
+jobs:
+  build-ebooks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install HonKit
+        run: npm i -g honkit
+
+      - name: Install Calibre (ebook-convert)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y calibre
+
+      - name: Build EPUB
+        run: npx honkit epub . dist/hucheng-daima.epub
+
+      - name: Build PDF
+        run: npx honkit pdf . dist/hucheng-daima.pdf
+
+      - name: Upload EPUB/PDF artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ebooks
+          path: |
+            dist/hucheng-daima.epub
+            dist/hucheng-daima.pdf
+
